@@ -55,6 +55,48 @@ def sim_pearson(prefs, p1, p2):
 
  	return r
 
+#Returns the best matches for person from the prefs dictionary.
+#number of results and similarity function are optional parms
+def topMatches(prefs,person, n=5, similarity=sim_pearson):
+	#list comprehension
+	scores=[(similarity(prefs,person,other),other) for other in prefs if other!=person]
+
+	#sort the list so the highest scores appear at the top
+	scores.sort( )
+	scores.reverse( )
+	return scores[0:n]
+
+# Gets recommendations for a person by using a weighted average
+# of every other user's rankings
+def getRecommendations(prefs,person,similarity=sim_pearson): # can change to euclid when run
+  totals={}
+  simSums={}
+  for other in prefs:
+    # don't compare me to myself
+    if other==person: continue
+    sim=similarity(prefs,person,other)
+
+    # ignore scores of zero or lower
+    if sim<=0: continue
+    for item in prefs[other]:
+
+      # only score movies I haven't seen yet
+      if item not in prefs[person] or prefs[person][item]==0:
+        # Similarity * Score
+        totals.setdefault(item,0)
+        totals[item]+=prefs[other][item]*sim #key part
+        # Sum of similarities
+        simSums.setdefault(item,0)
+        simSums[item]+=sim
+
+  # Create the normalized list
+  rankings=[(total/simSums[item],item) for item,total in totals.items(  )]
+
+  # Return the sorted list
+  rankings.sort(  )
+  rankings.reverse(  )
+  return rankings
+
 
 critics={'Lisa Rose': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.5,
  'Just My Luck': 3.0, 'Superman Returns': 3.5, 'You, Me and Dupree': 2.5,
