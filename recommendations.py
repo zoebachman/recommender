@@ -97,6 +97,16 @@ def getRecommendations(prefs,person,similarity=sim_pearson): # can change to euc
   rankings.reverse(  )
   return rankings
 
+def transformPrefs(prefs): #switch from person as key to movie/product as key in key:value pair
+  result={}
+  for person in prefs:
+    for item in prefs[person]:
+      result.setdefault(item,{})
+
+      # Flip item and person
+      result[item][person]=prefs[person][item]
+  return result
+
 
 critics={'Lisa Rose': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.5,
  'Just My Luck': 3.0, 'Superman Returns': 3.5, 'You, Me and Dupree': 2.5,
