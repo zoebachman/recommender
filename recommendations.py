@@ -124,6 +124,52 @@ def calculateSimilarItems(prefs,n=10):
 		result[item]=scores
 	return result
 
+def getRecommendedItems(prefs, itemMatch, user):
+	userRatings=prefs[user]
+	scores={}
+	totalSim={}
+
+	#Loop over items rated by this user
+	for (item, rating) in userRatings.items( ):
+
+		#loop over items similar to this one
+		for (similarity,item2) in itemMatch[item]:
+
+			#Ignore if this user has already rated this item
+			if item2 in userRatings: continue
+
+			#Weighted sum of rating times similarity
+			scores.setdefault(item2,0)
+			scores[item2]+=similarity*rating
+
+			#Sum of all the similarities
+			totalSim.setdefault(item2,0)
+			totalSim[item2]+=similarity
+
+	#Divide each total score by total weighting to get an average
+	rankings = [(score/totalSim[item], item) for item, score in scores.items( )]
+
+	#return the rankings from highest to lowest
+	rankings.sort( )
+	rankings.reverse( )
+	return rankings
+
+def loadMovieLens(path='/data/ml-100k'):
+
+	#get movie titles
+	movies={}
+	for line in open(path+'/u.item'):
+		(id,title)=line.split('|')[0:2]
+		movies[id] = title
+
+	#load data
+	prefs={}
+	for line in open(path+'u/data'):
+		(user,movieid,rating,ts)=line.split('\t')
+		prefs.setdefault(user,{})
+		prefs[user][movies[movieid]]=float(rating)
+	return prefs
+
 
 critics={'Lisa Rose': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.5,
  'Just My Luck': 3.0, 'Superman Returns': 3.5, 'You, Me and Dupree': 2.5,
