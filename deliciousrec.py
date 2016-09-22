@@ -1,4 +1,15 @@
+from pydelicious import get_popular, get_userposts, get_urlposts
 import time
+
+def initializeUserDict(tag,count=5):
+	user_dict={}
+	#get the top "count" popular posts
+	for p1 in get_popular(tag=tag)[0:count]: #from api
+		#find all users who posted this
+		for p2 in get_urlposts(p1['href']):
+			user=p2['user']
+			user_dict[user]={} #looking at a key:value pair?
+	return user_dict
 
 def fillItems(user_dict):
 	all_items={}
@@ -22,12 +33,4 @@ def fillItems(user_dict):
 			if item not in ratings:
 				ratings[item]=0.0
 
-def initializeUserDict(tag,count=5):
-	user_dict={}
-	#get the top "count" popular posts
-	for p1 in get_popular(tag=tag)[0:count]: #from api
-		#find all users who posted this
-		for p2 in get_urlposts(p1['href']):
-			user=p2['user']
-			user_dict[user]={} #looking at a key:value pair?
-	return user_dict
+

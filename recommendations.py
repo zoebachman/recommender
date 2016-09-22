@@ -57,7 +57,7 @@ def sim_pearson(prefs, p1, p2):
 
 #Returns the best matches for person from the prefs dictionary.
 #number of results and similarity function are optional parms
-def topMatches(prefs,person, n=5, similarity=sim_pearson):
+def topMatches(prefs,person, n=5, similarity=sim_pearson): #n = number of movies?
 	#list comprehension
 	scores=[(similarity(prefs,person,other),other) for other in prefs if other!=person]
 
@@ -106,6 +106,23 @@ def transformPrefs(prefs): #switch from person as key to movie/product as key in
       # Flip item and person
       result[item][person]=prefs[person][item]
   return result
+
+def calculateSimilarItems(prefs,n=10):
+	#Create a dictionary of items showing which other items they are most similar to
+	result={}
+
+	#invert the preference matrix to be item-centric
+	itemPrefs=transformPrefs(prefs)
+	c=0
+
+	for item in itemPrefs:
+		#Status updates for large datasets
+		c+=1 #increase count by 1
+		if c%100==0: print "%d / %d" % (c, len(itemPrefs))
+		#find the most similar items to this one
+		scores =topMatches(itemPrefs, item,n=n, similarity=sim_distance)
+		result[item]=scores
+	return result
 
 
 critics={'Lisa Rose': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.5,
