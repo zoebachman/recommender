@@ -122,6 +122,7 @@ def calculateSimilarItems(prefs,n=10):
 		#find the most similar items to this one
 		scores =topMatches(itemPrefs, item,n=n, similarity=sim_distance)
 		result[item]=scores
+	print(result)
 	return result
 
 def getRecommendedItems(prefs, itemMatch, user):
@@ -154,8 +155,10 @@ def getRecommendedItems(prefs, itemMatch, user):
 	rankings.reverse( )
 	return rankings
 
-def loadMovieLens(path='/data/ml-100k'):
 
+def loadMovieLens(path='data/ml_100k'):
+
+	#print path+'/u.item'
 	#get movie titles
 	movies={}
 	for line in open(path+'/u.item'):
@@ -164,7 +167,7 @@ def loadMovieLens(path='/data/ml-100k'):
 
 	#load data
 	prefs={}
-	for line in open(path+'u/data'):
+	for line in open(path+'/u.data'):
 		(user,movieid,rating,ts)=line.split('\t')
 		prefs.setdefault(user,{})
 		prefs[user][movies[movieid]]=float(rating)
