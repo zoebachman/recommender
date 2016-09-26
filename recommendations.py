@@ -20,8 +20,7 @@ def sim_distance(prefs,person1,person2):
 
   return 1/(1+sqrt(sum_of_squares))
 
- #Returns the Pearson correlation coefficient for p1 and p2
-
+#Returns the Pearson correlation coefficient for p1 and p2
 def sim_pearson(prefs, p1, p2):
  	#Get the list of mutually rated tiems
  	si={}
@@ -97,6 +96,7 @@ def getRecommendations(prefs,person,similarity=sim_pearson): # can change to euc
   rankings.reverse(  )
   return rankings
 
+#item-based prerence functions
 def transformPrefs(prefs): #switch from person as key to movie/product as key in key:value pair
   result={}
   for person in prefs:
@@ -122,7 +122,7 @@ def calculateSimilarItems(prefs,n=10):
 		#find the most similar items to this one
 		scores =topMatches(itemPrefs, item,n=n, similarity=sim_distance)
 		result[item]=scores
-	print(result)
+	print result
 	return result
 
 def getRecommendedItems(prefs, itemMatch, user):

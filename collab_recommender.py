@@ -127,34 +127,46 @@ def loadDataSet(path='data/book_dump'):
 	books={}
 	with open(path+'/fixed_books.csv') as csvfile:
 		reader = csv.DictReader(csvfile)
+		# reader = csv.reader(open(csvfile, 'rU'), dialect=csv.excel_tab)
 		for row in reader:
-			print (row['User-ID'])
-				# , row['book'])
-			# print row
-		
-
-
-		# (id,title)=line.split(';')[0:2]
-		# books[id] = title
-
-	# # load data
-	# prefs={}
-	# orange = "orange"
-
-	# for line in open(path+'/BX-Book-Ratings.csv'):
+			(id,title)=str(row).split(',')[0:2]
+			books[id] = title #but not title, just isbn
+			# print books[id] > still, got this to work
 
 		
 
-	# 	rating=str(line).split(';')[2:3]
-	# 	print rating
-	# 	# (user,movieid,rating,ts)=line.split('\t')
-	# 	prefs.setdefault(orange,{})
-	# 	# prefs[rating][books[id]]=float(rating)
-	# 	prefs[orange] = rating
-	# return prefs
-	# prefs[rating]
 
-	# return books
+
+	# load data
+	prefs={}
+	with open(path+'/fixed_books.csv') as csvfile:
+
+		reader = csv.DictReader(csvfile)
+
+		for row in reader:
+
+			#rating=str(row).split(',')[2:3]
+
+			(user,bookid,rating)=str(row).split(',')[0:3] #too many values to unpack?
+			prefs.setdefault(user,{})
+
+			new_rating = rating.strip("'',""") 
+
+			
+			if new_rating == 0:
+				prefs[user][books[bookid]] = 0
+			elif new_rating > 0:
+				prefs[user][books[bookid]] = new_rating
+
+		# return prefs
+
+		# print prefs
+
+		return new_rating
+		
+
+
+
 
 print loadDataSet()
 
